@@ -13,7 +13,7 @@ const textureloader = new THREE.CubeTextureLoader()
 // 添加环境贴图
 scene.environment = textureloader;
 // 将纹理贴图编码方式设置为与WebGL渲染器的编码方式一致
-textureloader.encoding = THREE.sRGBEncoding;
+textureloader.colorSpace = THREE.SRGBColorSpace;
 
 scene.add(model);
 

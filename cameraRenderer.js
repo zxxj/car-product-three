@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { resize } from './resize.js';
 
 // 相机
 const camera = new THREE.PerspectiveCamera(
@@ -15,7 +16,8 @@ camera.lookAt(0, 0, 0);
 // 渲染器
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.outputEncoding = THREE.sRGBEncoding; //解决加载gltf格式模型纹理贴图和原图不一样问题
+renderer.outputColorSpace = THREE.SRGBColorSpace; //解决加载gltf格式模型纹理贴图和原图不一样问题
 document.body.appendChild(renderer.domElement);
+resize();
 
 export { camera, renderer };
