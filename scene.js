@@ -37,4 +37,11 @@ scene.add(axesHelper);
 // 轨道控制器
 const controls = new OrbitControls(camera, renderer.domElement);
 
+// 设置模型最大状态
+controls.maxDistance = 1200;
+// 设置模型最小状态
+controls.minDistance = 500;
+// 轨道控制器上下旋转最的最大值
+controls.maxPolarAngle = (Math.PI / 2) * 0.9;
+
 export { scene };
