@@ -7,8 +7,6 @@ const textureloader = new THREE.CubeTextureLoader()
   .load(['px.jpg', 'nx.jpg', 'py.jpg', 'ny.jpg', 'pz.jpg', 'nz.jpg']);
 
 const updateModelMaterial = (object) => {
-  console.log(object);
-
   // 遍历所有Mesh批量设置环境贴图
   object.scene.traverse((obj) => {
     // 为模型中所有的Mesh批量设置环境贴图

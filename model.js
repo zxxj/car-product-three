@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { handleLoad } from './loadGLTF.js';
 import { updateModelMaterial } from './updateModelMaterial.js';
+import { createPointsTag } from './createPointsTag.js';
 
 const model = new THREE.Group();
 
@@ -9,6 +10,9 @@ const gltf = await handleLoad('/public/gltf/轿车.glb');
 
 // 修改模型中所需要手动修改的材质
 updateModelMaterial(gltf);
+
+// 标注热点
+createPointsTag(gltf);
 
 // 通过矩形平面创建一个地面
 const planGemotery = new THREE.PlaneGeometry(6000, 6000);
