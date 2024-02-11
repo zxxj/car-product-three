@@ -17,7 +17,6 @@ const doorName = ['右车门', '右后门', '左前门', '左后门', '后备箱
 const chooseArr = [];
 
 const open = (model) => {
-  console.log(model);
   pointsName.forEach((tagName, index) => {
     // 获取模型中所有的热点模型
     let tag = model.scene.getObjectByName(tagName).children[0];
@@ -50,7 +49,6 @@ const choose = (event) => {
   raycaster.setFromCamera(new THREE.Vector2(x, y), camera);
 
   const intersects = raycaster.intersectObjects(chooseArr);
-  console.log(intersects);
 
   // 控制车门的开关状态
   if (intersects.length > 0) {
@@ -61,33 +59,50 @@ const choose = (event) => {
     const chooseDoorName = intersects[0].object.door.name;
 
     if (chooseDoorName == '右车门' || chooseDoorName == '右后门') {
-      if (chooseDoor.state == 'close') {
-        chooseDoor.state = 'open';
-        chooseDoor.rotateY(-Math.PI / 3);
-      } else {
-        chooseDoor.state = 'close';
-        chooseDoor.rotateY(Math.PI / 3);
-      }
+      chooseDoor.openTween = openAndClose('y', 0, Math.PI / 3, chooseDoor);
+      chooseDoor.closeTween = openAndClose('y', Math.PI / 3, 0, chooseDoor);
     } else if (chooseDoorName == '左前门' || chooseDoorName == '左后门') {
-      if (chooseDoor.state == 'close') {
-        chooseDoor.state = 'open';
-        chooseDoor.rotateY(Math.PI / 3);
-      } else {
-        chooseDoor.state = 'close';
-        chooseDoor.rotateY(-Math.PI / 3);
-      }
+      chooseDoor.openTween = openAndClose('y', 0, -Math.PI / 3, chooseDoor);
+      chooseDoor.closeTween = openAndClose('y', -Math.PI / 3, 0, chooseDoor);
     } else if (chooseDoorName == '后备箱') {
-      if (chooseDoor.state == 'close') {
-        chooseDoor.state = 'open';
-        chooseDoor.rotateZ(-Math.PI / 3);
-      } else {
-        chooseDoor.state = 'close';
-        chooseDoor.rotateZ(Math.PI / 3);
-      }
+      chooseDoor.openTween = openAndClose('z', 0, Math.PI / 3, chooseDoor);
+      chooseDoor.closeTween = openAndClose('z', Math.PI / 3, 0, chooseDoor);
+    }
+
+    if (chooseDoor.status === 'close') {
+      chooseDoor.status = 'open';
+      chooseDoor.openTween.start();
+    } else {
+      chooseDoor.status = 'close';
+      chooseDoor.closeTween.start();
     }
   }
 };
 
 addEventListener('click', choose);
+
+const openAndClose = (axis, angle1, angle2, door) => {
+  const state = {
+    angle: angle1, // 车门动画初始的角度
+  };
+
+  const tween = new TWEEN.Tween(state);
+  tween.to(
+    {
+      angle: angle2, // 车门动画结束的角度
+    },
+    2000
+  );
+
+  tween.onUpdate(() => {
+    if (axis === 'y') {
+      door.rotation.y = state.angle;
+    } else {
+      door.rotation.z = state.angle;
+    }
+  });
+
+  return tween;
+};
 
 export { open };
