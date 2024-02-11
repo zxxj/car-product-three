@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { camera } from './cameraRenderer.js';
+import { closeSound, openSound } from './audio.js';
 
 // 模型中的热点tag
 const pointsName = [
@@ -59,14 +60,50 @@ const choose = (event) => {
     const chooseDoorName = intersects[0].object.door.name;
 
     if (chooseDoorName == '右车门' || chooseDoorName == '右后门') {
-      chooseDoor.openTween = openAndClose('y', 0, Math.PI / 3, chooseDoor);
-      chooseDoor.closeTween = openAndClose('y', Math.PI / 3, 0, chooseDoor);
+      chooseDoor.openTween = openAndClose(
+        'y',
+        0,
+        Math.PI / 3,
+        chooseDoor,
+        'yes'
+      );
+      chooseDoor.closeTween = openAndClose(
+        'y',
+        Math.PI / 3,
+        0,
+        chooseDoor,
+        'no'
+      );
     } else if (chooseDoorName == '左前门' || chooseDoorName == '左后门') {
-      chooseDoor.openTween = openAndClose('y', 0, -Math.PI / 3, chooseDoor);
-      chooseDoor.closeTween = openAndClose('y', -Math.PI / 3, 0, chooseDoor);
+      chooseDoor.openTween = openAndClose(
+        'y',
+        0,
+        -Math.PI / 3,
+        chooseDoor,
+        'yes'
+      );
+      chooseDoor.closeTween = openAndClose(
+        'y',
+        -Math.PI / 3,
+        0,
+        chooseDoor,
+        'no'
+      );
     } else if (chooseDoorName == '后备箱') {
-      chooseDoor.openTween = openAndClose('z', 0, Math.PI / 3, chooseDoor);
-      chooseDoor.closeTween = openAndClose('z', Math.PI / 3, 0, chooseDoor);
+      chooseDoor.openTween = openAndClose(
+        'z',
+        0,
+        Math.PI / 3,
+        chooseDoor,
+        'yes'
+      );
+      chooseDoor.closeTween = openAndClose(
+        'z',
+        Math.PI / 3,
+        0,
+        chooseDoor,
+        'no'
+      );
     }
 
     if (chooseDoor.status === 'close') {
@@ -81,7 +118,7 @@ const choose = (event) => {
 
 addEventListener('click', choose);
 
-const openAndClose = (axis, angle1, angle2, door) => {
+const openAndClose = (axis, angle1, angle2, door, isOpen) => {
   const state = {
     angle: angle1, // 车门动画初始的角度
   };
@@ -101,6 +138,15 @@ const openAndClose = (axis, angle1, angle2, door) => {
       door.rotation.z = state.angle;
     }
   });
+
+  // 设置开关门声音
+  if (isOpen === 'yes') {
+    // 开门声音在开门动画开始执行时发生
+    tween.onStart(() => openSound.play());
+  } else {
+    // 关门声音在关门动画结束时发生
+    tween.onComplete(() => closeSound.play());
+  }
 
   return tween;
 };
